@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Protected Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color:white;
+            animation: changeColor 20s infinite ease;
+        }
+        @keyframes changeColor {
+  0% { background: linear-gradient(to right, #4d4dff, #944dff); }
+  10% { background: linear-gradient(to right, #944dff, #4d94ff); }
+  20% { background: linear-gradient(to right, #4d94ff, #4dffff); }
+  30% { background: linear-gradient(to right, #4dffff, #4d4dff); }
+  40% { background: linear-gradient(to right, #4d4dff, #94b3ff); }
+  50% { background: linear-gradient(to right, #94b3ff,#4d4dff ); }
+  60% { background: linear-gradient(to right, #4d4dff, #94b3ff ); }
+  70% { background: linear-gradient(to right,  #94b3ff,#4dffff ); }
+  80% { background: linear-gradient(to right, #4dffff,#4d94ff); }
+  90% { background: linear-gradient(to right, #4d94ff,#944dff ); }
+  100% { background: linear-gradient(to right, #944dff, #4d4dff); }
+}
+        
+        .container {
+            max-width: 400px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+
+        .password-input {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        input[type="password"] {
+            width: calc(100% - 40px);
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .toggle-password {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome</h1>
+        <form id="passwordForm">
+            <label for="password">Password:</label>
+            <div class="password-input">
+                <input type="password" id="password" name="password">
+                <span class="toggle-password" onclick="togglePasswordVisibility()">&#x1f441;</span>
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+    <script>
+        function togglePasswordVisibility() {
+            var passwordInput = document.getElementById("password");
+            var toggleButton = document.querySelector(".toggle-password");
+            
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                toggleButton.innerHTML = "H"; // Change to "👁️" icon when showing password
+            } else {
+                passwordInput.type = "password";
+                toggleButton.innerHTML = "S"; // Change to "" icon when hiding password
+            }
+        }
+
+        document.getElementById("passwordForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent default form submission
+            
+            var password = document.getElementById("password").value;
+            
+            // Check if password is correct
+            if (password === "crackcode") { // Replace "yourpassword" with the actual password
+                window.location.href = "custom.html"; // Redirect to next page
+            } else {
+                alert("Incorrect password. Please try again.");
+                document.getElementById("password").value = ""; // Clear input field
+            }
+        });
+    </script>
+</body>
+</html>

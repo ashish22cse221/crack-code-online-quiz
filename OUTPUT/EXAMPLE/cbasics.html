@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Programming Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 20px;
+        }
+
+        .question-box,
+        .choices-box {
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .question-box {
+            flex: 2;
+            margin-right: 20px;
+        }
+
+        .choices-box {
+            flex: 1;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        button {
+            display: block;
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .explanation {
+            margin-top: 20px;
+            font-style: italic;
+        }
+
+        .correct-answer {
+            color: green;
+        }
+
+        .incorrect-answer {
+            color: red;
+        }
+
+        pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="question-box">
+            <h1>Question</h1>
+            <div id="question"></div>
+            <div class="explanation" id="explanation"></div>
+            <div id="answer-feedback"></div>
+        </div>
+        <div class="choices-box" id="choices"></div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: `What is the output of the following C code?
+
+<pre>#include &lt;stdio.h&gt;
+
+int main() {
+    int x = 5;
+    printf("%d", x++ * x--);
+    return 0;
+}</pre>`,
+                choices: ["25", "20", "30", "15"],
+                answer: "25",
+                explanation: "In this code, the value of x is used first and then incremented and decremented. Therefore, the output will be 5 * 6 = 25."
+            },
+            {
+                question: `Which keyword is used to define a constant in Java?`,
+                choices: ["final", "const", "static", "constant"],
+                answer: "final",
+                explanation: "In Java, the 'final' keyword is used to define constants."
+            },
+            {
+                question: `What will the following Python code output?
+
+<pre>print(3*3**3)</pre>`,
+                choices: ["27", "81", "9", "729"],
+                answer: "729",
+                explanation: "The expression 3*3**3 evaluates to 3 * 27 = 81. Therefore, the output will be 81."
+            },
+            // Add more questions here
+        ];
+
+        // Shuffle the questions to avoid repetition
+        questions.sort(() => Math.random() - 0.5);
+
+        let currentQuestion = 0;
+        let score = 0;
+
+        const questionElement = document.getElementById('question');
+        const choicesElement = document.getElementById('choices');
+        const explanationElement = document.getElementById('explanation');
+        const answerFeedbackElement = document.getElementById('answer-feedback');
+
+        function displayQuestion() {
+            const q = questions[currentQuestion];
+            questionElement.innerHTML = q.question;
+            explanationElement.textContent = '';
+
+            choicesElement.innerHTML = '';
+            for (let i = 0; i < q.choices.length; i++) {
+                const choice = q.choices[i];
+                const button = document.createElement('button');
+                button.textContent = choice;
+                button.value = choice;
+                button.onclick = checkAnswer;
+                choicesElement.appendChild(button);
+            }
+        }
+
+        function checkAnswer() {
+            const selectedAnswer = this.value;
+            const correctAnswer = questions[currentQuestion].answer;
+            const explanation = questions[currentQuestion].explanation;
+
+            if (selectedAnswer === correctAnswer) {
+                score++;
+                answerFeedbackElement.textContent = 'Correct!';
+                answerFeedbackElement.className = 'correct-answer';
+            } else {
+                answerFeedbackElement.textContent = 'Incorrect!';
+                answerFeedbackElement.className = 'incorrect-answer';
+            }
+            
+            explanationElement.textContent = explanation;
+            currentQuestion++;
+
+            if (currentQuestion < questions.length) {
+                displayQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            questionElement.textContent = '';
+            choicesElement.innerHTML = '';
+            explanationElement.textContent = '';
+            answerFeedbackElement.textContent = '';
+            const resultElement = document.createElement('div');
+            resultElement.textContent = `You scored ${score} out of ${questions.length}`;
+            choicesElement.appendChild(resultElement);
+
+            // Display correct answers and explanations for each question
+            for (let i = 0; i < questions.length; i++) {
+                const q = questions[i];
+                const questionSummary = document.createElement('div');
+                questionSummary.innerHTML = `<strong>Question ${i + 1}:</strong> ${q.question}<br><strong>Correct Answer:</strong> ${q.answer}<br><strong>Explanation:</strong> ${q.explanation}<br><br>`;
+                choicesElement.appendChild(questionSummary);
+            }
+        }
+
+        displayQuestion();
+    </script>
+</body>
+</html>

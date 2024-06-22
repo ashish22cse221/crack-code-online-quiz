@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Generator</title>
+    <style>
+        
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color:white;
+            animation: changeColor 20s infinite ease;
+        }  
+        @keyframes changeColor {
+  0% { background: linear-gradient(to right, #4d4dff, #944dff); }
+  10% { background: linear-gradient(to right, #944dff, #4d94ff); }
+  20% { background: linear-gradient(to right, #4d94ff, #4dffff); }
+  30% { background: linear-gradient(to right, #4dffff, #4d4dff); }
+  40% { background: linear-gradient(to right, #4d4dff, #94b3ff); }
+  50% { background: linear-gradient(to right, #94b3ff,#4d4dff ); }
+  60% { background: linear-gradient(to right, #4d4dff, #94b3ff ); }
+  70% { background: linear-gradient(to right,  #94b3ff,#4dffff ); }
+  80% { background: linear-gradient(to right, #4dffff,#4d94ff); }
+  90% { background: linear-gradient(to right, #4d94ff,#944dff ); }
+  100% { background: linear-gradient(to right, #944dff, #4d4dff); }
+}
+
+
+        #quiz-generator {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #quiz-container {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        button {
+            margin-top: 10px;
+            padding: 8px 20px;
+            border: none;
+            background-color: #00ff08;
+            color: #000000;
+            cursor: pointer;
+            border-radius: 5px;
+            font-family: Arial;
+            font-weight: bolder;
+
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #00eaff;
+        }
+
+        .question {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 10px;
+        }
+
+        .question label {
+            margin-bottom: 5px;
+        }
+
+        .question input[type="text"],
+        .question input[type="number"] {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .quiz-question {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="quiz-generator">
+        <h1>Quiz Generator</h1>
+        <div id="questions-container">
+            <div class="question">
+                <label for="question">Question:</label>
+                <input type="text" class="question-input">
+                <label for="options">Options (separated by commas):</label>
+                <input type="text" class="options-input">
+                <label for="correct-option">Correct Option:</label>
+                <input type="text" class="correct-option-input">
+                <label for="marks">Marks:</label>
+                <input type="number" class="marks-input">
+            </div>
+        </div>
+        <button onclick="addQuestion()">Add Question</button>
+        <br>
+        <button onclick="publishQuiz()">Publish Quiz</button>
+    </div>
+    <div id="quiz-container" style="display: none;">
+        <h1>Quiz</h1>
+        <div id="quiz-questions"></div>
+        <button onclick="submitQuiz()">Submit Quiz</button>
+        <div id="quiz-results"></div>
+    </div>
+    <script>
+        let quizData = [];
+        let score = 0;
+
+        function addQuestion() {
+            const questionInputs = document.querySelectorAll('.question-input');
+            const optionsInputs = document.querySelectorAll('.options-input');
+            const correctOptionInputs = document.querySelectorAll('.correct-option-input');
+            const marksInputs = document.querySelectorAll('.marks-input');
+
+            for (let i = 0; i < questionInputs.length; i++) {
+                const questionInput = questionInputs[i].value.trim();
+                const optionsInput = optionsInputs[i].value.trim().split(',');
+                const correctOptionInput = correctOptionInputs[i].value.trim();
+                const marksInput = parseInt(marksInputs[i].value);
+
+                if (questionInput === '' || optionsInput.length < 2 || correctOptionInput === '' || isNaN(marksInput)) {
+                    alert('Please fill in all fields correctly for each question.');
+                    return;
+                }
+
+                quizData.push({
+                    question: questionInput,
+                    options: optionsInput,
+                    correctOption: correctOptionInput,
+                    marks: marksInput
+                });
+            }
+
+            clearInputs();
+            displayQuizQuestions();
+        }
+
+        function clearInputs() {
+            const questionInputs = document.querySelectorAll('.question-input');
+            const optionsInputs = document.querySelectorAll('.options-input');
+            const correctOptionInputs = document.querySelectorAll('.correct-option-input');
+            const marksInputs = document.querySelectorAll('.marks-input');
+
+            questionInputs.forEach(input => input.value = '');
+            optionsInputs.forEach(input => input.value = '');
+            correctOptionInputs.forEach(input => input.value = '');
+            marksInputs.forEach(input => input.value = '');
+        }
+
+        function displayQuizQuestions() {
+            const quizQuestionsContainer = document.getElementById('quiz-questions');
+            quizQuestionsContainer.innerHTML = '';
+
+            quizData.forEach((question, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.classList.add('quiz-question');
+                questionDiv.innerHTML = `<p>${index + 1}. ${question.question}</p>`;
+                question.options.forEach((option, i) => {
+                    questionDiv.innerHTML += `<label><input type="radio" name="q${index}" value="${option}"> ${option}</label><br>`;
+                });
+                quizQuestionsContainer.appendChild(questionDiv);
+            });
+
+            document.getElementById('quiz-container').style.display = 'block';
+        }
+
+        function publishQuiz() {
+            if (quizData.length === 0) {
+                alert('No questions added to the quiz.');
+                return;
+            }
+
+            displayQuizQuestions();
+        }
+
+        function submitQuiz() {
+            const quizQuestionsContainer = document.getElementById('quiz-questions');
+            score = 0;
+
+            quizData.forEach((question, index) => {
+                const selectedOption = document.querySelector(`input[name="q${index}"]:checked`);
+                if (selectedOption && selectedOption.value === question.correctOption) {
+                    score += question.marks;
+                }
+            });
+
+            const quizResultsContainer = document.getElementById('quiz-results');
+            quizResultsContainer.innerHTML = `<h3>Your Score: ${score}</h3>`;
+
+            // Display the quiz again for attending
+            displayQuizQuestions();
+        }
+    </script>
+</body>
+</html>
